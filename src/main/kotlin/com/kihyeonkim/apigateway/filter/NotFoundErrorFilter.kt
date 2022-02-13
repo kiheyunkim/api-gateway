@@ -1,0 +1,30 @@
+package com.kihyeonkim.apigateway.filter
+
+import com.netflix.zuul.ZuulFilter
+import com.netflix.zuul.context.RequestContext
+import org.springframework.cloud.netflix.zuul.filters.support.FilterConstants
+
+class NotFoundErrorFilter : ZuulFilter() {
+	override fun shouldFilter(): Boolean {
+		val statusCode: Int = RequestContext.getCurrentContext().responseStatusCode
+
+		return statusCode in 400..499
+	}
+
+	override fun run(): Any {
+		val requestContext: RequestContext = RequestContext.getCurrentContext()
+		requestContext.response.headerNames.addAll(mutableListOf("content-type", "application/json; charset=utf-8"))
+		requestContext.responseBody = "{\"message\":\"not found\"}"
+
+		return requestContext
+	}
+
+	override fun filterType(): String {
+		return FilterConstants.POST_TYPE
+	}
+
+	override fun filterOrder(): Int {
+		return FilterConstants.SEND_RESPONSE_FILTER_ORDER - 1
+	}
+
+}
