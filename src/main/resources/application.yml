@@ -1,0 +1,39 @@
+spring:
+  application:
+    name: api-gateway
+#management:
+#  endpoints:
+#    web:
+#      exposure:
+#        include: health,info,hystrix.stream
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://eureka-cluster-8761/eureka,http://eureka-cluster-8762/eureka
+    initial-instance-info-replication-interval-seconds: 0
+    instance-info-replication-interval-seconds: 1
+    registry-fetch-interval-seconds: 1
+    register-with-eureka: true
+    fetch-registry: true
+
+  instance:
+    prefer-ip-address: true
+    lease-renewal-interval-in-seconds: 1
+    lease-expiration-duration-in-seconds: 2
+
+server:
+  port: 8800
+  #error:
+   # whitelabel:
+    #  enabled: false
+
+
+logging:
+  level:
+    root: debug
+# FallbackProvider ??? ?? ??
+zuul:
+  routes:
+    user-service:
+      path: /user-service/**
